@@ -16,11 +16,6 @@ export default function LoginPage() {
 
       const result = await loginAccount(email, password);
 
-      if (!result) {
-        setError(result?.message || "Login failed");
-        return;
-      }
-
       saveAuth(result.token, result.user);
       window.location.href = "/mahasiswa";
     } catch (err) {
