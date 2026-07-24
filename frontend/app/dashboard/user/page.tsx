@@ -29,11 +29,6 @@ const initialForm: UserForm = {
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const [currentUser, setCurrentUser] = useState<{
-    name: string;
-    email: string;
-    role: string;
-  } | null>(null);
   const [form, setForm] = useState<UserForm>(initialForm);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formVisible, setFormVisible] = useState(false);
@@ -59,20 +54,6 @@ export default function UsersPage() {
   };
 
   useEffect(() => {
-    const token = getToken();
-    const storedUser = getUser();
-
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
-    if (!storedUser || storedUser.role !== "admin") {
-      window.location.href = "/mahasiswa";
-      return;
-    }
-
-    setCurrentUser(storedUser);
     loadUsers();
   }, []);
 
@@ -190,43 +171,12 @@ export default function UsersPage() {
     }
   };
 
-  const handleLogout = async () => {
-    const confirmed = window.confirm("Yakin ingin logout?");
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await logoutAccount();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      logout();
-      window.location.href = "/login";
-    }
-  };
-
   return (
     <main className="container">
       <div className="header">
         <div>
           <h1>Manajemen User</h1>
           <p>Halaman CRUD user khusus untuk admin.</p>
-        </div>
-
-        <div>
-          <p>Welcome, {currentUser?.name || "Admin"}</p>
-
-          <div style={{ display: "flex", gap: 10 }}>
-            <Link href="/mahasiswa">
-              <button type="button">Data Mahasiswa</button>
-            </Link>
-
-            <button type="button" className="btn-danger" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
         </div>
       </div>
 
@@ -235,7 +185,7 @@ export default function UsersPage() {
 
       <button
         type="button"
-        className="btn-primary"
+        className="btn btn-primary"
         style={{ marginTop: 20 }}
         onClick={() => {
           setEditingId(null);
@@ -351,10 +301,10 @@ export default function UsersPage() {
                 </select>
               </div>
 
-              <div style={{ display: "flex", gap: 10 }}>
+              <div className="d-flex gap-2">
                 <button
                   type="submit"
-                  className="btn-primary"
+                  className="btn btn-primary"
                   disabled={submitting}
                 >
                   {submitting
@@ -364,7 +314,11 @@ export default function UsersPage() {
                       : "Tambah User"}
                 </button>
 
-                <button type="button" onClick={resetForm}>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="btn btn-secondary"
+                >
                   Batal
                 </button>
               </div>
@@ -383,6 +337,7 @@ export default function UsersPage() {
         ) : (
           <div style={{ overflowX: "auto" }}>
             <table
+              className="table"
               style={{
                 width: "100%",
                 borderCollapse: "collapse",
@@ -421,13 +376,17 @@ export default function UsersPage() {
                           gap: 8,
                         }}
                       >
-                        <button type="button" onClick={() => handleEdit(user)}>
+                        <button
+                          type="button"
+                          className="btn btn-warning"
+                          onClick={() => handleEdit(user)}
+                        >
                           Edit
                         </button>
 
                         <button
                           type="button"
-                          className="btn-danger"
+                          className="btn btn-danger"
                           onClick={() => handleDelete(user.id)}
                         >
                           Hapus
@@ -435,6 +394,7 @@ export default function UsersPage() {
 
                         <button
                           type="button"
+                          className="btn btn-info"
                           onClick={() => handleResetPassword(user.id)}
                         >
                           Reset Password
