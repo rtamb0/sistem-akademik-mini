@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import MahasiswaForm from "@/components/MahasiswaForm";
-import MahasiswaTable from "@/components/MahasiswaTable";
+import MahasiswaForm from "@/components/mahasiswa/MahasiswaForm";
+import MahasiswaTable from "@/components/mahasiswa/MahasiswaTable";
 import {
   createMahasiswa,
   getMahasiswa,
