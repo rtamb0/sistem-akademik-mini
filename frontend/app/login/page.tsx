@@ -17,7 +17,14 @@ export default function LoginPage() {
       const result = await loginAccount(email, password);
 
       saveAuth(result.token, result.user);
-      window.location.href = "/mahasiswa";
+
+      const role = result.user.role;
+
+      if (role !== "admin") {
+        window.location.href = "/dashboard/mahasiswa";
+      } else {
+        window.location.href = "/dashboard/user";
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login gagal");
     }
