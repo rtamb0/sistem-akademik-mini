@@ -7,12 +7,12 @@ import MahasiswaTable from "@/components/mahasiswa/MahasiswaTable";
 import {
   createMahasiswa,
   getMahasiswa,
-  Mahasiswa,
   updateMahasiswa,
   deleteMahasiswa,
 } from "@/lib/api/mahasiswa";
 import { getAllProdi } from "@/lib/api/prodi";
 import { usePermissions } from "@/lib/permission/mahasiswa";
+import { Mahasiswa } from "@/lib/type";
 
 export default function MahasiswaPage() {
   const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);

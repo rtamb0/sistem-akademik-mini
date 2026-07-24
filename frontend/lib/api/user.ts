@@ -1,21 +1,7 @@
 import { getToken } from "../auth";
+import { UserInput } from "../type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  created_at?: string;
-};
-
-export type UserInput = {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-};
 
 export async function getUsers() {
   try {

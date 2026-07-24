@@ -2,24 +2,6 @@ import { getToken } from "../auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export type Mahasiswa = {
-  id: number;
-  nim: string;
-  nama: string;
-  prodi_id: number;
-  nama_prodi: string;
-  angkatan: number;
-  foto?: string | null;
-};
-
-export type MahasiswaInput = {
-  nim: string;
-  nama: string;
-  prodi: string;
-  angkatan: number;
-  file: File | null;
-};
-
 export async function getMahasiswa(params: {
   search?: string;
   prodi_id?: string;

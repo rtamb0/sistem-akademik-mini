@@ -8,10 +8,10 @@ import {
   getUsers,
   resetPasswordByAdmin,
   updateUser,
-  User,
 } from "@/lib/api/user";
 import { logoutAccount } from "@/lib/api/auth";
 import { getToken, getUser, logout } from "@/lib/auth";
+import { User } from "@/lib/type";
 
 type UserForm = {
   name: string;

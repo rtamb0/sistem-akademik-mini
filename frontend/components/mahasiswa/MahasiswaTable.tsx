@@ -1,6 +1,6 @@
 "use client";
 
-import { Mahasiswa } from "@/lib/api/mahasiswa";
+import { Mahasiswa } from "@/lib/type";
 import { useState } from "react";
 import { usePermissions } from "@/lib/permission/mahasiswa";
 
