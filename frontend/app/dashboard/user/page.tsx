@@ -85,7 +85,7 @@ export default function UsersPage() {
       setSelectedUser(null);
       setFormVisible(false);
       resetParams();
-      await loadUsers();
+      await loadUsers("", 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan user");
     }

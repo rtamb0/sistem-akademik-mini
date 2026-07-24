@@ -90,7 +90,7 @@ export default function ProdiPage() {
       setSelectedProdi(null);
       setFormVisible(false);
       resetParams();
-      await loadProdi();
+      await loadProdi("", 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan data");
       throw err;

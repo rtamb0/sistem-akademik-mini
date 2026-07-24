@@ -127,7 +127,7 @@ export default function MahasiswaPage() {
       setSelectedMahasiswa(null);
       setFormVisible(false);
       resetParams();
-      await loadMahasiswa();
+      await loadMahasiswa("", "", 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan data");
       throw err;
