@@ -9,7 +9,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const [rows] = await db.query(
       `SELECT id, name, email, role, created_at
        FROM users
-       ORDER BY id DESC`,
+       ORDER BY id ASC`,
     );
 
     res.json({
