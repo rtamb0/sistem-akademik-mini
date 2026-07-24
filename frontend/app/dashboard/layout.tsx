@@ -46,7 +46,7 @@ export default function DashboardLayout({
         className="d-flex justify-content-between p-4"
         style={{ backgroundColor: "#333", color: "#fff" }}
       >
-        <h1 className="mb-0">Dashboard</h1>
+        <h1 className="mb-0">Sistem Akademik Mini</h1>
         <div className="d-flex align-items-center gap-3">
           <p className="mb-0">Welcome, {currentUser?.name || ""}</p>
           <button
