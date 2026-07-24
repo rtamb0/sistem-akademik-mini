@@ -19,7 +19,7 @@ export type UserInput = {
 
 export async function getUsers() {
   try {
-    const response = await fetch(`${API_URL}/users`, {
+    const response = await fetch(`${API_URL}/user`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -40,7 +40,7 @@ export async function getUsers() {
 
 export async function createUser(payload: UserInput) {
   try {
-    const response = await fetch(`${API_URL}/users`, {
+    const response = await fetch(`${API_URL}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export async function updateUser(
   },
 ) {
   try {
-    const response = await fetch(`${API_URL}/users/${id}`, {
+    const response = await fetch(`${API_URL}/user/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export async function updateUser(
 
 export async function deleteUser(id: number) {
   try {
-    const response = await fetch(`${API_URL}/users/${id}`, {
+    const response = await fetch(`${API_URL}/user/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -117,7 +117,7 @@ export async function deleteUser(id: number) {
 
 export async function resetPasswordByAdmin(id: number) {
   try {
-    const response = await fetch(`${API_URL}/users/${id}/reset-password`, {
+    const response = await fetch(`${API_URL}/user/${id}/reset-password`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -139,7 +139,7 @@ export async function resetPasswordByAdmin(id: number) {
 
 export async function requestPasswordResetByUser(email: string) {
   try {
-    const response = await fetch(`${API_URL}/users/forgot-password`, {
+    const response = await fetch(`${API_URL}/user/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -167,7 +167,7 @@ export async function resetPasswordByUser(
   confirmPassword: string,
 ) {
   try {
-    const response = await fetch(`${API_URL}/users/reset-password`, {
+    const response = await fetch(`${API_URL}/user/reset-password`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
