@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/user", "/dashboard/mahasiswa"];
+const protectedRoutes = ["/user", "/dashboard"];
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -31,6 +31,10 @@ export function proxy(request: NextRequest) {
     loginUrl.searchParams.set("next", pathname);
 
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (pathname === "/dashboard/user" && userRole !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard/mahasiswa", request.url));
   }
 
   return NextResponse.next();
