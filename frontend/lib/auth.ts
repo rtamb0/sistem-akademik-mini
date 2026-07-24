@@ -1,16 +1,36 @@
+const TOKEN_COOKIE_NAME = "token";
+const TOKEN_MAX_AGE = 60 * 60 * 24;
+
 const isBrowser = typeof window !== "undefined";
 
 export function saveAuth(token: string, user: any) {
-  if (!isBrowser) return;
+  if (!isBrowser) return null;
 
-  localStorage.setItem("token", token);
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+
+  document.cookie = [
+    `${TOKEN_COOKIE_NAME}=${encodeURIComponent(token)}`,
+    `Max-Age=${TOKEN_MAX_AGE}`,
+    "Path=/",
+    "SameSite=Lax",
+    secure,
+  ].join("; ");
+
   localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function getToken() {
-  if (!isBrowser) return null;
+export function getToken(): string | null {
+  if (typeof document === "undefined") return null;
 
-  return localStorage.getItem("token");
+  const tokenCookie = document.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith(`${TOKEN_COOKIE_NAME}=`));
+
+  if (!tokenCookie) return null;
+
+  const token = tokenCookie.substring(TOKEN_COOKIE_NAME.length + 1);
+
+  return decodeURIComponent(token);
 }
 
 export function getUser() {
@@ -26,9 +46,16 @@ export function getUser() {
 }
 
 export function logout() {
-  if (!isBrowser) return;
+  if (typeof window === "undefined") return;
 
-  localStorage.removeItem("token");
+  document.cookie = [
+    `${TOKEN_COOKIE_NAME}=`,
+    "Max-Age=0",
+    "Path=/",
+    "SameSite=Lax",
+  ].join("; ");
+
   localStorage.removeItem("user");
-  window.location.href = "/login";
+
+  window.location.replace("/login");
 }

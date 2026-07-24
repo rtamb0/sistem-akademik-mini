@@ -5,7 +5,7 @@ const protectedRoutes = ["/user", "/mahasiswa"];
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const token = getToken();
+  const token = request.cookies.get("token")?.value;
   const loginUrl = new URL("/login", request.url);
 
   if (pathname === "/") {
