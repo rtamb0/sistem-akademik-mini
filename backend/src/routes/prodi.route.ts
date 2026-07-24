@@ -19,7 +19,7 @@ router.get(
 );
 
 router.get(
-  "/",
+  "/paginated",
   authMiddleware,
   allowRoles("admin", "operator", "viewer"),
   getPaginatedProdi,
