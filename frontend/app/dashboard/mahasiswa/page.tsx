@@ -12,8 +12,6 @@ import {
   deleteMahasiswa,
 } from "@/lib/api/mahasiswa";
 import { getAllProdi } from "@/lib/api/prodi";
-import { logoutAccount } from "@/lib/api/auth";
-import { getToken, getUser, logout } from "@/lib/auth";
 import { usePermissions } from "@/lib/permission/mahasiswa";
 
 export default function MahasiswaPage() {
@@ -30,11 +28,6 @@ export default function MahasiswaPage() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPage, setTotalPage] = useState(1);
-  const [user, setUser] = useState<{
-    name: string;
-    email: string;
-    role: string;
-  } | null>(null);
   const [formVisible, setFormVisible] = useState(false);
 
   const { canCreate } = usePermissions();
@@ -77,8 +70,6 @@ export default function MahasiswaPage() {
   };
 
   useEffect(() => {
-    const user = getUser();
-    setUser(user);
     loadMahasiswa();
     loadProdi();
   }, []);
@@ -155,31 +146,10 @@ export default function MahasiswaPage() {
     }
   };
 
-  const handleLogout = async () => {
-    const confirmed = window.confirm("Yakin ingin logout?");
-    if (confirmed) {
-      await logoutAccount();
-      logout();
-      window.location.href = "/login";
-    }
-  };
-
   return (
     <main className="container">
-      <div className="header">
-        <div>
-          <h1>CRUD Data Mahasiswa</h1>
-          <p>Frontend Next.js yang terhubung ke backend Express.js.</p>
-        </div>
-
-        <div>
-          <div>
-            <p>Welcome, {user?.name || "User"}</p>
-          </div>
-          <button className="btn-danger" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
+      <div>
+        <h1>Data Mahasiswa</h1>
       </div>
 
       {message && <div className="message">{message}</div>}
@@ -201,7 +171,7 @@ export default function MahasiswaPage() {
       {canCreate && (
         <button
           style={{ marginTop: 20 }}
-          className="btn-primary"
+          className="btn btn-primary"
           onClick={() => {
             setSelectedMahasiswa(null);
             setFormVisible(true);
@@ -218,7 +188,6 @@ export default function MahasiswaPage() {
         prodiId={prodiId}
         loading={loading}
         pagination={{ page, totalPage }}
-        totalPage={totalPage}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSearch={handleSearch}
