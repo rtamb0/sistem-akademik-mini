@@ -67,14 +67,17 @@ export default function MahasiswaForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card">
+    <form onSubmit={handleSubmit} className="card p-3">
       <h2>{selectedMahasiswa ? "Edit Mahasiswa" : "Tambah Mahasiswa"}</h2>
 
-      <div className="grid">
-        <div className="form-group">
-          <label htmlFor="nim">NIM</label>
+      <div className="row row-cols-2 g-3">
+        <div>
+          <label className="form-label" htmlFor="nim">
+            NIM
+          </label>
           <input
             id="nim"
+            className="form-control"
             value={form.nim}
             onChange={(e) => setForm({ ...form, nim: e.target.value })}
             placeholder="Contoh: 2201001"
@@ -82,10 +85,13 @@ export default function MahasiswaForm({
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="nama">Nama</label>
+        <div>
+          <label className="form-label" htmlFor="nama">
+            Nama
+          </label>
           <input
             id="nama"
+            className="form-control"
             value={form.nama}
             onChange={(e) => setForm({ ...form, nama: e.target.value })}
             placeholder="Nama mahasiswa"
@@ -94,9 +100,12 @@ export default function MahasiswaForm({
         </div>
 
         <div className="form-group">
-          <label htmlFor="prodi">Prodi</label>
+          <label className="form-label" htmlFor="prodi">
+            Prodi
+          </label>
           <select
             id="prodi"
+            className="form-select"
             value={form.prodi}
             onChange={(e) => setForm({ ...form, prodi: e.target.value })}
             required
@@ -111,10 +120,13 @@ export default function MahasiswaForm({
         </div>
 
         <div className="form-group">
-          <label htmlFor="angkatan">Angkatan</label>
+          <label className="form-label" htmlFor="angkatan">
+            Angkatan
+          </label>
           <input
             id="angkatan"
             type="number"
+            className="form-control"
             value={form.angkatan}
             onChange={(e) =>
               setForm({ ...form, angkatan: Number(e.target.value) })
@@ -123,7 +135,7 @@ export default function MahasiswaForm({
           />
         </div>
 
-        <div className="form-group">
+        <div className="d-flex align-items-center gap-2">
           <div>
             <img
               src={
@@ -137,29 +149,31 @@ export default function MahasiswaForm({
               style={{ borderRadius: "50%", objectFit: "cover" }}
             />
           </div>
-          <label htmlFor="file">Foto (opsional)</label>
-          <input
-            ref={fileInputRef}
-            id="file"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0] ?? null;
-              setForm({ ...form, file });
-            }}
-          />
+          <div>
+            <label htmlFor="file">Foto (opsional)</label>
+            <input
+              ref={fileInputRef}
+              id="file"
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                setForm({ ...form, file });
+              }}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="actions">
-        <button type="submit" className="btn-primary" disabled={loading}>
+      <div className="mt-3 d-flex gap-2">
+        <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "Menyimpan..." : selectedMahasiswa ? "Update" : "Simpan"}
         </button>
-
         {!selectedMahasiswa && (
           <button
             type="button"
-            className="btn-secondary"
+            className="btn btn-danger"
             onClick={() => {
               setForm(initialForm);
               if (fileInputRef.current) {
@@ -175,7 +189,7 @@ export default function MahasiswaForm({
         {selectedMahasiswa && (
           <button
             type="button"
-            className="btn-secondary"
+            className="btn btn-danger"
             onClick={onCancelEdit}
           >
             Batal Edit
