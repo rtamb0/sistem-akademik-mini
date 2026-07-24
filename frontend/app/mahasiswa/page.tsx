@@ -6,14 +6,15 @@ import MahasiswaForm from "@/components/MahasiswaForm";
 import MahasiswaTable from "@/components/MahasiswaTable";
 import {
   createMahasiswa,
-  getAllProdi,
   getMahasiswa,
   Mahasiswa,
   updateMahasiswa,
   deleteMahasiswa,
-  logoutAccount,
-} from "@/lib/api";
+} from "@/lib/api/mahasiswa";
+import { getAllProdi } from "@/lib/api/prodi";
+import { logoutAccount } from "@/lib/api/auth";
 import { getToken, getUser, logout } from "@/lib/auth";
+import { usePermissions } from "@/lib/permission/mahasiswa";
 
 export default function MahasiswaPage() {
   const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
@@ -36,18 +37,7 @@ export default function MahasiswaPage() {
   } | null>(null);
   const [formVisible, setFormVisible] = useState(false);
 
-  const role = user?.role;
-  const canCreate = role === "admin" || role === "operator";
-
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-    const user = getUser();
-    setUser(user);
-  }, []);
+  const { canCreate } = usePermissions();
 
   const loadMahasiswa = async () => {
     try {
@@ -87,6 +77,8 @@ export default function MahasiswaPage() {
   };
 
   useEffect(() => {
+    const user = getUser();
+    setUser(user);
     loadMahasiswa();
     loadProdi();
   }, []);

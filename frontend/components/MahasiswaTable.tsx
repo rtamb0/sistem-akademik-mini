@@ -1,8 +1,8 @@
 "use client";
 
-import { Mahasiswa } from "@/lib/api";
-import { getUser } from "@/lib/auth";
+import { Mahasiswa } from "@/lib/api/mahasiswa";
 import { useState } from "react";
+import { usePermissions } from "@/lib/permission/mahasiswa";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -34,10 +34,7 @@ export default function MahasiswaTable({
   onSearch,
   onChangePage,
 }: Props) {
-  const user = getUser();
-  const role = user?.role;
-  const canEdit = role === "admin" || role === "operator";
-  const canDelete = role === "admin";
+  const { canEdit, canDelete } = usePermissions();
 
   const [selectedProdi, setSelectedProdi] = useState(prodiId);
   const [inputSearch, setInputSearch] = useState(search);

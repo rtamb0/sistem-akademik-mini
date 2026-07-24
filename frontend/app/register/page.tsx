@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { registerAccount } from "@/lib/api";
+import { registerAccount } from "@/lib/api/auth";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");

@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { Mahasiswa, MahasiswaInput } from "@/lib/api";
+import { Mahasiswa, MahasiswaInput } from "@/lib/api/mahasiswa";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 

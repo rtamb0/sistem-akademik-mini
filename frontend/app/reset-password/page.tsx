@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { resetPasswordByUser } from "@/lib/api";
+import { resetPasswordByUser } from "@/lib/api/user";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");

@@ -6,11 +6,11 @@ import {
   createUser,
   deleteUser,
   getUsers,
-  logoutAccount,
   resetPasswordByAdmin,
   updateUser,
   User,
-} from "@/lib/api";
+} from "@/lib/api/user";
+import { logoutAccount } from "@/lib/api/auth";
 import { getToken, getUser, logout } from "@/lib/auth";
 
 type UserForm = {
