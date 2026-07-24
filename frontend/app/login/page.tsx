@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { saveAuth } from "@/lib/auth";
 import { loginAccount } from "@/lib/api/auth";
+import { requestPasswordResetByUser } from "@/lib/api/user";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -27,6 +28,25 @@ export default function LoginPage() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login gagal");
+    }
+  };
+
+  const handleResetPassword = () => {
+    const email = prompt("Masukkan email Anda untuk mereset password:")?.trim();
+    if (email) {
+      requestPasswordResetByUser(email)
+        .then((result) => {
+          alert(
+            result.message || "Link reset password telah dikirim ke email Anda",
+          );
+        })
+        .catch((err) => {
+          alert(
+            err instanceof Error
+              ? err.message
+              : "Gagal mengirim link reset password",
+          );
+        });
     }
   };
 
@@ -74,6 +94,13 @@ export default function LoginPage() {
           Login
         </button>
       </form>
+      <p className="mt-2" style={{ textAlign: "center" }}>
+        Forgot your password?
+        <a onClick={handleResetPassword} className="btn btn-link">
+          Reset it here
+        </a>
+        .
+      </p>
     </div>
   );
 }
