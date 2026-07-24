@@ -30,3 +30,15 @@ export type UserInput = {
   password: string;
   role: string;
 };
+
+export type Prodi = {
+  id: number;
+  nama_prodi: string;
+  kode_prodi: string;
+  created_at?: string;
+};
+
+export type ProdiInput = {
+  nama_prodi: string;
+  kode_prodi: string;
+};

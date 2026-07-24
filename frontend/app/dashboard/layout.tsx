@@ -77,6 +77,20 @@ export default function DashboardLayout({
             </li>
             <li>
               <Link
+                href="/dashboard/prodi"
+                className="p-2 rounded-3 d-block"
+                style={{
+                  backgroundColor:
+                    currentMenu === "/dashboard/prodi"
+                      ? "#e9ecef"
+                      : "transparent",
+                }}
+              >
+                Prodi
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/dashboard/user"
                 className="p-2 rounded-3 d-block"
                 style={{
