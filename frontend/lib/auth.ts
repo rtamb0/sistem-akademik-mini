@@ -1,10 +1,27 @@
 const TOKEN_COOKIE_NAME = "token";
+const USER_COOKIE_NAME = "user";
 const TOKEN_MAX_AGE = 60 * 60 * 24;
 
-const isBrowser = typeof window !== "undefined";
+function isBrowser() {
+  return typeof window !== "undefined";
+}
 
-export function saveAuth(token: string, user: any) {
-  if (!isBrowser) return null;
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+
+  const prefix = `${name}=`;
+
+  const cookie = document.cookie
+    .split("; ")
+    .find((item) => item.startsWith(prefix));
+
+  if (!cookie) return null;
+
+  return decodeURIComponent(cookie.substring(prefix.length));
+}
+
+export function saveAuth(token: string, user: unknown) {
+  if (!isBrowser()) return;
 
   const secure = window.location.protocol === "https:" ? "; Secure" : "";
 
@@ -16,46 +33,36 @@ export function saveAuth(token: string, user: any) {
     secure,
   ].join("; ");
 
-  localStorage.setItem("user", JSON.stringify(user));
+  document.cookie = [
+    `${USER_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(user))}`,
+    `Max-Age=${TOKEN_MAX_AGE}`,
+    "Path=/",
+    "SameSite=Lax",
+    secure,
+  ].join("; ");
 }
 
 export function getToken(): string | null {
-  if (typeof document === "undefined") return null;
-
-  const tokenCookie = document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith(`${TOKEN_COOKIE_NAME}=`));
-
-  if (!tokenCookie) return null;
-
-  const token = tokenCookie.substring(TOKEN_COOKIE_NAME.length + 1);
-
-  return decodeURIComponent(token);
+  return getCookie(TOKEN_COOKIE_NAME);
 }
 
 export function getUser() {
-  if (!isBrowser) return null;
+  const raw = getCookie(USER_COOKIE_NAME);
 
-  const raw = localStorage.getItem("user");
+  if (!raw) return null;
 
   try {
-    return raw ? JSON.parse(raw) : null;
+    return JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
 export function logout() {
-  if (typeof window === "undefined") return;
+  if (!isBrowser()) return;
 
-  document.cookie = [
-    `${TOKEN_COOKIE_NAME}=`,
-    "Max-Age=0",
-    "Path=/",
-    "SameSite=Lax",
-  ].join("; ");
-
-  localStorage.removeItem("user");
+  document.cookie = `${TOKEN_COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax`;
+  document.cookie = `${USER_COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax`;
 
   window.location.replace("/login");
 }
