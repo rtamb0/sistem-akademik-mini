@@ -11,7 +11,6 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -54,11 +53,10 @@ export default function ResetPasswordPage() {
         password,
         confirmPassword,
       );
-
-      setMessage(result.message || "Password berhasil diubah");
-      setSuccess(true);
+      alert(result.message || "Password berhasil diubah");
       setPassword("");
       setConfirmPassword("");
+      window.location.href = "/login";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengubah password");
     } finally {
@@ -77,7 +75,7 @@ export default function ResetPasswordPage() {
       }}
     >
       <section
-        className="card"
+        className="card p-4"
         style={{
           width: "100%",
           maxWidth: 420,
@@ -106,88 +104,89 @@ export default function ResetPasswordPage() {
             Link reset password tidak valid karena token tidak ditemukan.
           </p>
         )}
-
-        {!success ? (
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
             <div
+              className="form-group"
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 12,
+                gap: 5,
               }}
             >
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="Email"
-                />
-              </div>
-
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Password Baru</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Password baru"
-                />
-              </div>
-
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Konfirmasi Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(event) => setConfirmPassword(event.target.value)}
-                  placeholder="Konfirmasi password baru"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={loading || !token}
-              >
-                {loading ? "Mengubah Password..." : "Ubah Password"}
-              </button>
+              <label className="form-label" htmlFor="email">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Email"
+                className="form-control"
+                required
+              />
             </div>
-          </form>
-        ) : (
-          <button
-            type="button"
-            className="btn-primary"
-            style={{ width: "100%" }}
-            onClick={() => {
-              window.location.href = "/login";
-            }}
-          >
-            Kembali ke Login
-          </button>
-        )}
+
+            <div
+              className="form-group"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+              }}
+            >
+              <label className="form-label" htmlFor="password">
+                Password Baru
+              </label>
+              <input
+                className="form-control"
+                type="password"
+                id="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Password baru"
+                required
+              />
+            </div>
+
+            <div
+              className="form-group"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+              }}
+            >
+              <label className="form-label" htmlFor="confirmPassword">
+                Konfirmasi Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder="Konfirmasi password baru"
+                className="form-control"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn-primary btn"
+              disabled={loading || !token}
+            >
+              {loading ? "Mengubah Password..." : "Ubah Password"}
+            </button>
+          </div>
+        </form>
       </section>
     </main>
   );
