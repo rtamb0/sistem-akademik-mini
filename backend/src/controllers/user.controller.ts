@@ -176,13 +176,18 @@ export const requestPasswordResetByUser = async (
       });
     }
 
+    const normalisedEmail = String(email).trim().toLowerCase();
+
     const [users]: any = await db.query(
-      "SELECT id, email FROM users WHERE email = ?",
-      [email],
+      `SELECT id, email
+       FROM users
+       WHERE email = ?
+       LIMIT 1`,
+      [normalisedEmail],
     );
 
     if (users.length === 0) {
-      return res.status(404).json({
+      res.status(404).json({
         message: "User tidak ditemukan",
       });
     }
@@ -196,21 +201,12 @@ export const requestPasswordResetByUser = async (
       .update(rawToken)
       .digest("hex");
 
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
-
     await db.query(
-      `UPDATE password_reset_tokens
-       SET used_at = NOW()
-       WHERE user_id = ?
-         AND used_at IS NULL`,
-      [user.id],
-    );
-
-    await db.query(
-      `INSERT INTO password_reset_tokens
-       (user_id, token_hash, expires_at)
-       VALUES (?, ?, ?)`,
-      [user.id, tokenHash, expiresAt],
+      `UPDATE users
+       SET reset_token = ?,
+           reset_token_expired_at = DATE_ADD(NOW(), INTERVAL 30 MINUTE)
+       WHERE id = ?`,
+      [tokenHash, user.id],
     );
 
     const resetUrl =
@@ -218,27 +214,43 @@ export const requestPasswordResetByUser = async (
       `?token=${encodeURIComponent(rawToken)}` +
       `&email=${encodeURIComponent(user.email)}`;
 
-    await mailer.sendMail({
-      from: `Admin Kampus <${process.env.MAIL_USER}>`,
-      to: user.email,
-      subject: "Reset Password",
-      html: `
-        <p>Anda meminta reset password.</p>
-        <p>Klik link berikut untuk mengganti password:</p>
-        <a href="${resetUrl}">
-          Reset Password
-        </a>
-        <p>Link berlaku selama 30 menit.</p>
-      `,
-    });
+    try {
+      await mailer.sendMail({
+        from: `Admin Kampus <${process.env.MAIL_USER}>`,
+        to: user.email,
+        subject: "Reset Password",
+        html: `
+          <p>Anda meminta reset password.</p>
+          <p>Klik link berikut untuk mengganti password:</p>
+          <p>
+            <a href="${resetUrl}">
+              Reset Password
+            </a>
+          </p>
+          <p>Link berlaku selama 30 menit.</p>
+          <p>Jika Anda tidak meminta reset password, abaikan email ini.</p>
+        `,
+      });
+    } catch (mailError) {
+      await db.query(
+        `UPDATE users
+         SET reset_token = NULL,
+             reset_token_expired_at = NULL
+         WHERE id = ?
+           AND reset_token = ?`,
+        [user.id, tokenHash],
+      );
 
-    return res.status(200).json({
+      throw mailError;
+    }
+
+    res.status(200).json({
       message: "Link reset password telah dikirim ke email",
     });
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Terjadi kesalahan server",
     });
   }
@@ -261,57 +273,45 @@ export const resetPasswordByUser = async (req: Request, res: Response) => {
     }
 
     if (password !== confirmPassword) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "Konfirmasi password tidak sesuai",
       });
     }
 
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const normalisedEmail = String(email).trim().toLowerCase();
 
-    const [resetTokens]: any = await db.query(
-      `SELECT
-         password_reset_tokens.id,
-         password_reset_tokens.user_id
-       FROM password_reset_tokens
-       INNER JOIN users
-         ON users.id = password_reset_tokens.user_id
-       WHERE users.email = ?
-         AND password_reset_tokens.token_hash = ?
-         AND password_reset_tokens.used_at IS NULL
-         AND password_reset_tokens.expires_at > NOW()
-       ORDER BY password_reset_tokens.id DESC
-       LIMIT 1`,
-      [email, tokenHash],
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(String(token))
+      .digest("hex");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const [result]: any = await db.query(
+      `UPDATE users
+       SET password = ?,
+           reset_token = NULL,
+           reset_token_expired_at = NULL
+       WHERE email = ?
+         AND reset_token = ?
+         AND reset_token_expired_at IS NOT NULL
+         AND reset_token_expired_at > NOW()`,
+      [hashedPassword, normalisedEmail, tokenHash],
     );
 
-    if (resetTokens.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(400).json({
         message: "Token tidak valid atau sudah kedaluwarsa",
       });
     }
 
-    const resetToken = resetTokens[0];
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await db.query("UPDATE users SET password = ? WHERE id = ?", [
-      hashedPassword,
-      resetToken.user_id,
-    ]);
-
-    await db.query(
-      `UPDATE password_reset_tokens
-       SET used_at = NOW()
-       WHERE id = ?`,
-      [resetToken.id],
-    );
-
-    return res.status(200).json({
+    res.status(200).json({
       message: "Password berhasil diubah",
     });
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Terjadi kesalahan server",
     });
   }
