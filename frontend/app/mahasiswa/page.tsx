@@ -89,11 +89,28 @@ export default function MahasiswaPage() {
   useEffect(() => {
     loadMahasiswa();
     loadProdi();
-  }, [page]);
+  }, []);
 
-  const handleSearch = () => {
+  const handleSearch = (searchInput: string, prodiInput: string) => {
+    setSearch(searchInput);
+    setProdiId(prodiInput);
     setPage(1);
     loadMahasiswa();
+  };
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+    loadMahasiswa();
+  };
+
+  const handleEdit = (item: Mahasiswa) => {
+    setSelectedMahasiswa(item);
+    setFormVisible(true);
+  };
+  const resetParams = () => {
+    setSearch("");
+    setProdiId("");
+    setPage(1);
   };
 
   const handleSubmit = async (payload: MahasiswaInput) => {
@@ -122,6 +139,7 @@ export default function MahasiswaPage() {
 
       setSelectedMahasiswa(null);
       setFormVisible(false);
+      resetParams();
       await loadMahasiswa();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan data");
@@ -201,59 +219,19 @@ export default function MahasiswaPage() {
         </button>
       )}
 
-      <section className="card" style={{ marginTop: 20 }}>
-        <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari NIM atau nama"
-          />
-          <select value={prodiId} onChange={(e) => setProdiId(e.target.value)}>
-            <option value="">Semua Prodi</option>
-            {prodi.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.nama_prodi}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleSearch}>Cari</button>
-        </div>
-
-        <h2>Daftar Mahasiswa</h2>
-        {loading ? (
-          <p>Memuat data...</p>
-        ) : (
-          <MahasiswaTable
-            mahasiswa={mahasiswa}
-            onEdit={(mahasiswa) => {
-              setSelectedMahasiswa(mahasiswa);
-              setFormVisible(true);
-            }}
-            onDelete={handleDelete}
-          />
-        )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 10,
-          }}
-        >
-          <button disabled={page <= 1} onClick={() => setPage(page - 1)}>
-            Previous
-          </button>
-          <span>
-            Halaman {page} dari {totalPage}
-          </span>
-          <button
-            disabled={page >= totalPage}
-            onClick={() => setPage(page + 1)}
-          >
-            Next
-          </button>
-        </div>
-      </section>
+      <MahasiswaTable
+        mahasiswaList={mahasiswa}
+        prodiList={prodi}
+        search={search}
+        prodiId={prodiId}
+        loading={loading}
+        pagination={{ page, totalPage }}
+        totalPage={totalPage}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onSearch={handleSearch}
+        onChangePage={handleChangePage}
+      />
     </main>
   );
 }
