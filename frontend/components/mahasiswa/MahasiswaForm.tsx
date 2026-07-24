@@ -30,7 +30,6 @@ export default function MahasiswaForm({
 }: Props) {
   const [form, setForm] = useState<MahasiswaInput>(initialForm);
   const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (selectedMahasiswa) {
@@ -39,13 +38,10 @@ export default function MahasiswaForm({
         nama: selectedMahasiswa.nama,
         prodi: selectedMahasiswa.prodi_id.toString(),
         angkatan: selectedMahasiswa.angkatan,
-        file: selectedMahasiswa.foto,
+        file: null,
       });
     } else {
       setForm(initialForm);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     }
   }, [selectedMahasiswa]);
 
@@ -56,9 +52,6 @@ export default function MahasiswaForm({
     try {
       await onSubmit(form);
       setForm(initialForm);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -152,7 +145,6 @@ export default function MahasiswaForm({
           <div>
             <label htmlFor="file">Foto (opsional)</label>
             <input
-              ref={fileInputRef}
               id="file"
               type="file"
               className="form-control"
@@ -176,9 +168,6 @@ export default function MahasiswaForm({
             className="btn btn-danger"
             onClick={() => {
               setForm(initialForm);
-              if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-              }
               onCloseForm?.();
             }}
           >
