@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/user", "/mahasiswa"];
+const protectedRoutes = ["/user", "/dashboard/mahasiswa"];
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const token = request.cookies.get("token")?.value;
   const loginUrl = new URL("/login", request.url);
+  const user = request.cookies.get("user")?.value;
+  const userRole = user ? JSON.parse(user).role : null;
 
   if (pathname === "/") {
     if (token) {
-      return NextResponse.redirect(new URL("/mahasiswa", request.url));
+      if (userRole !== "admin") {
+        return NextResponse.redirect(
+          new URL("/dashboard/mahasiswa", request.url),
+        );
+      } else {
+        return NextResponse.redirect(new URL("/dashboard/user", request.url));
+      }
     } else {
       return NextResponse.redirect(loginUrl);
     }
