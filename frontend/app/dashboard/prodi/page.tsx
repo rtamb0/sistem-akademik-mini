@@ -152,7 +152,7 @@ export default function ProdiPage() {
         prodiList={prodi}
         search={search}
         loading={loading}
-        pagination={{ page, totalPage }}
+        pagination={{ page, limit, totalPage }}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSearch={handleSearch}

@@ -14,6 +14,7 @@ type Props = {
   loading: boolean;
   pagination: {
     page: number;
+    limit: number;
     totalPage: number;
   };
   onEdit: (item: Mahasiswa) => void;
@@ -98,7 +99,11 @@ export default function MahasiswaTable({
           <tbody>
             {mahasiswaList.map((item, index) => (
               <tr key={item.id}>
-                <td>{index + 1}</td>
+                <td>
+                  {pagination.page === 1
+                    ? index + 1
+                    : (pagination.page - 1) * pagination.limit + index + 1}
+                </td>
                 <td>{item.nim}</td>
                 <td
                   style={

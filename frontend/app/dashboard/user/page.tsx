@@ -185,7 +185,7 @@ export default function UsersPage() {
         userList={users}
         loading={loading}
         search={search}
-        pagination={{ page, totalPage }}
+        pagination={{ page, limit, totalPage }}
         onSearch={handleSearch}
         onChangePage={handleChangePage}
         onEdit={handleEdit}

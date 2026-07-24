@@ -9,6 +9,7 @@ type Props = {
   loading: boolean;
   pagination: {
     page: number;
+    limit: number;
     totalPage: number;
   };
   onEdit: (item: User) => void;
@@ -74,7 +75,11 @@ export default function UserTable({
           <tbody>
             {userList.map((user, index) => (
               <tr key={user.id}>
-                <td>{index + 1}</td>
+                <td>
+                  {pagination.page === 1
+                    ? index + 1
+                    : (pagination.page - 1) * pagination.limit + index + 1}
+                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>

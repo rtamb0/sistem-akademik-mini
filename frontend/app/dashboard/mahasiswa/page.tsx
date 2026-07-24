@@ -191,7 +191,7 @@ export default function MahasiswaPage() {
         search={search}
         prodiId={prodiId}
         loading={loading}
-        pagination={{ page, totalPage }}
+        pagination={{ page, limit, totalPage }}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSearch={handleSearch}

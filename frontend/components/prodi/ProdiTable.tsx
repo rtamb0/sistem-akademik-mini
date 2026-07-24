@@ -10,6 +10,7 @@ type Props = {
   loading: boolean;
   pagination: {
     page: number;
+    limit: number;
     totalPage: number;
   };
   onEdit: (item: Prodi) => void;
@@ -74,7 +75,11 @@ export default function ProdiTable({
           <tbody>
             {prodiList.map((item, index) => (
               <tr key={item.id}>
-                <td>{index + 1}</td>
+                <td>
+                  {pagination.page === 1
+                    ? index + 1
+                    : (pagination.page - 1) * pagination.limit + index + 1}
+                </td>
                 <td>{item.kode_prodi}</td>
                 <td>{item.nama_prodi}</td>
                 <td>
