@@ -187,7 +187,7 @@ export const requestPasswordResetByUser = async (
     );
 
     if (users.length === 0) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "User tidak ditemukan",
       });
     }
@@ -273,7 +273,7 @@ export const resetPasswordByUser = async (req: Request, res: Response) => {
     }
 
     if (password !== confirmPassword) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Konfirmasi password tidak sesuai",
       });
     }
