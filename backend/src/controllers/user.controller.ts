@@ -21,6 +21,53 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+export const getPaginatedUsers = async (req: Request, res: Response) => {
+  try {
+    const search = String(req.query.search || "");
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.max(Number(req.query.limit) || 10, 1);
+    const offset = (page - 1) * limit;
+
+    let where = "WHERE 1=1";
+    const params: any[] = [];
+
+    if (search) {
+      where += " AND (name LIKE ? OR email LIKE ? OR role LIKE ?)";
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+    }
+
+    const [countRows]: any = await db.query(
+      `SELECT COUNT(*) AS total FROM users ${where}`,
+      params,
+    );
+
+    const total = countRows[0].total;
+
+    const [rows] = await db.query(
+      `SELECT id, name, email, role, created_at
+      FROM users 
+      ${where} 
+      ORDER BY id ASC
+      LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
+    );
+
+    res.json({
+      message: "Data user berhasil diambil",
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
+      },
+      data: rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Terjadi kesalahan server" });
+  }
+};
+
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, role } = req.body;

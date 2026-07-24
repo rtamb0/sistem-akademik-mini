@@ -1,7 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   createUser,
   deleteUser,
@@ -9,41 +8,38 @@ import {
   resetPasswordByAdmin,
   updateUser,
 } from "@/lib/api/user";
-import { logoutAccount } from "@/lib/api/auth";
-import { getToken, getUser, logout } from "@/lib/auth";
-import { User } from "@/lib/type";
-
-type UserForm = {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-};
-
-const initialForm: UserForm = {
-  name: "",
-  email: "",
-  password: "",
-  role: "viewer",
-};
+import { User, UserInput } from "@/lib/type";
+import UserTable from "@/components/user/UserTable";
+import UserForm from "@/components/user/UserForm";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const [form, setForm] = useState<UserForm>(initialForm);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [formVisible, setFormVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [totalPage, setTotalPage] = useState(1);
 
-  const loadUsers = async () => {
+  const loadUsers = async (
+    searchValue: string = search,
+    pageValue: number = page,
+  ) => {
     try {
       setLoading(true);
       setError("");
 
-      const result = await getUsers();
+      const result = await getUsers({
+        search: searchValue,
+        page: pageValue,
+        limit,
+      });
+
       setUsers(result.data);
+      setTotalPage(result.meta.totalPage);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Gagal mengambil data user",
@@ -57,68 +53,46 @@ export default function UsersPage() {
     loadUsers();
   }, []);
 
-  const resetForm = () => {
-    setForm(initialForm);
-    setEditingId(null);
-    setFormVisible(false);
+  const handleSearch = (searchInput: string) => {
+    setSearch(searchInput);
+    setPage(1);
+    loadUsers(searchInput, 1);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+    loadUsers(search, newPage);
+  };
 
+  const resetParams = () => {
+    setSearch("");
+    setPage(1);
+  };
+
+  const handleSubmit = async (payload: UserInput) => {
     try {
-      setSubmitting(true);
       setMessage("");
       setError("");
 
-      if (!form.name || !form.email || !form.role) {
-        setError("Nama, email, dan role wajib diisi");
-        return;
-      }
-
-      if (editingId === null && !form.password) {
-        setError("Password wajib diisi untuk user baru");
-        return;
-      }
-
-      if (editingId !== null) {
-        await updateUser(editingId, {
-          name: form.name,
-          email: form.email,
-          role: form.role,
-        });
-
+      if (selectedUser) {
+        await updateUser(selectedUser.id, payload);
         setMessage("User berhasil diperbarui");
       } else {
-        await createUser({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          role: form.role,
-        });
-
+        await createUser(payload);
         setMessage("User berhasil ditambahkan");
       }
 
-      resetForm();
+      setSelectedUser(null);
+      setFormVisible(false);
+      resetParams();
       await loadUsers();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan user");
-    } finally {
-      setSubmitting(false);
     }
   };
 
   const handleEdit = (user: User) => {
-    setEditingId(user.id);
-    setForm({
-      name: user.name,
-      email: user.email,
-      password: "",
-      role: user.role,
-    });
-    setMessage("");
-    setError("");
+    setSelectedUser(user);
     setFormVisible(true);
   };
 
@@ -136,8 +110,9 @@ export default function UsersPage() {
       await deleteUser(id);
       setMessage("User berhasil dihapus");
 
-      if (editingId === id) {
-        resetForm();
+      if (selectedUser && selectedUser.id === id) {
+        setSelectedUser(null);
+        setFormVisible(false);
       }
 
       await loadUsers();
@@ -175,239 +150,48 @@ export default function UsersPage() {
     <main className="container">
       <div className="header">
         <div>
-          <h1>Manajemen User</h1>
-          <p>Halaman CRUD user khusus untuk admin.</p>
+          <h1>Data User</h1>
         </div>
       </div>
 
       {message && <div className="message">{message}</div>}
       {error && <div className="message error">{error}</div>}
 
+      {formVisible && (
+        <UserForm
+          selectedUser={selectedUser}
+          onSubmit={handleSubmit}
+          onCancelEdit={() => {
+            setSelectedUser(null);
+            setFormVisible(false);
+          }}
+          onCloseForm={() => setFormVisible(false)}
+        />
+      )}
+
       <button
         type="button"
         className="btn btn-primary"
         style={{ marginTop: 20 }}
         onClick={() => {
-          setEditingId(null);
-          setForm(initialForm);
-          setMessage("");
-          setError("");
+          setSelectedUser(null);
           setFormVisible(true);
         }}
       >
         Tambah User
       </button>
 
-      {formVisible && (
-        <section className="card" style={{ marginTop: 20 }}>
-          <h2>{editingId !== null ? "Edit User" : "Tambah User"}</h2>
-
-          <form onSubmit={handleSubmit}>
-            <div
-              style={{
-                display: "grid",
-                gap: 12,
-                maxWidth: 500,
-              }}
-            >
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Nama</label>
-                <input
-                  value={form.name}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      name: event.target.value,
-                    })
-                  }
-                  placeholder="Nama user"
-                />
-              </div>
-
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      email: event.target.value,
-                    })
-                  }
-                  placeholder="Email user"
-                />
-              </div>
-
-              {editingId === null && (
-                <div
-                  className="form-group"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 5,
-                  }}
-                >
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    value={form.password}
-                    onChange={(event) =>
-                      setForm({
-                        ...form,
-                        password: event.target.value,
-                      })
-                    }
-                    placeholder="Password"
-                  />
-                </div>
-              )}
-
-              <div
-                className="form-group"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 5,
-                }}
-              >
-                <label>Role</label>
-                <select
-                  value={form.role}
-                  onChange={(event) =>
-                    setForm({
-                      ...form,
-                      role: event.target.value,
-                    })
-                  }
-                >
-                  <option value="admin">Admin</option>
-                  <option value="operator">Operator</option>
-                  <option value="viewer">Viewer</option>
-                </select>
-              </div>
-
-              <div className="d-flex gap-2">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={submitting}
-                >
-                  {submitting
-                    ? "Menyimpan..."
-                    : editingId !== null
-                      ? "Simpan Perubahan"
-                      : "Tambah User"}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="btn btn-secondary"
-                >
-                  Batal
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-      )}
-
-      <section className="card" style={{ marginTop: 20 }}>
-        <h2>Daftar User</h2>
-
-        {loading ? (
-          <p>Memuat data...</p>
-        ) : users.length === 0 ? (
-          <p>Belum ada data user.</p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table
-              className="table"
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={{ padding: 10, textAlign: "left" }}>ID</th>
-                  <th style={{ padding: 10, textAlign: "left" }}>Nama</th>
-                  <th style={{ padding: 10, textAlign: "left" }}>Email</th>
-                  <th style={{ padding: 10, textAlign: "left" }}>Role</th>
-                  <th style={{ padding: 10, textAlign: "left" }}>
-                    Tanggal Dibuat
-                  </th>
-                  <th style={{ padding: 10, textAlign: "left" }}>Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td style={{ padding: 10 }}>{user.id}</td>
-                    <td style={{ padding: 10 }}>{user.name}</td>
-                    <td style={{ padding: 10 }}>{user.email}</td>
-                    <td style={{ padding: 10 }}>{user.role}</td>
-                    <td style={{ padding: 10 }}>
-                      {user.created_at
-                        ? new Date(user.created_at).toLocaleString("id-ID")
-                        : "-"}
-                    </td>
-                    <td style={{ padding: 10 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 8,
-                        }}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-warning"
-                          onClick={() => handleEdit(user)}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(user.id)}
-                        >
-                          Hapus
-                        </button>
-
-                        <button
-                          type="button"
-                          className="btn btn-info"
-                          onClick={() => handleResetPassword(user.id)}
-                        >
-                          Reset Password
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+      <UserTable
+        userList={users}
+        loading={loading}
+        search={search}
+        pagination={{ page, totalPage }}
+        onSearch={handleSearch}
+        onChangePage={handleChangePage}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onResetPassword={handleResetPassword}
+      />
     </main>
   );
 }

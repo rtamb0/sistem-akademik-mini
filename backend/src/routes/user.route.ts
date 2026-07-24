@@ -9,6 +9,7 @@ import {
   resetPasswordByAdmin,
   requestPasswordResetByUser,
   resetPasswordByUser,
+  getPaginatedUsers,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -16,13 +17,21 @@ const router = Router();
 router.post("/forgot-password", requestPasswordResetByUser);
 router.patch("/reset-password", resetPasswordByUser);
 
-router.use(authMiddleware);
-router.use(allowRoles("admin"));
-
-router.get("/", getAllUsers);
-router.post("/", createUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
-router.patch("/:id/reset-password", resetPasswordByAdmin);
+router.get("/", authMiddleware, getAllUsers, allowRoles("admin"));
+router.get(
+  "/paginated",
+  authMiddleware,
+  getPaginatedUsers,
+  allowRoles("admin"),
+);
+router.post("/", authMiddleware, createUser, allowRoles("admin"));
+router.put("/:id", authMiddleware, updateUser, allowRoles("admin"));
+router.delete("/:id", authMiddleware, deleteUser, allowRoles("admin"));
+router.patch(
+  "/:id/reset-password",
+  authMiddleware,
+  resetPasswordByAdmin,
+  allowRoles("admin"),
+);
 
 export default router;

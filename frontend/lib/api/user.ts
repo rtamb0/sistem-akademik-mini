@@ -3,13 +3,47 @@ import { UserInput } from "../type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getUsers() {
+export async function getAllUsers() {
   try {
     const response = await fetch(`${API_URL}/user`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
     });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal mengambil data user");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+}
+
+export async function getUsers(params: {
+  search?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const query = new URLSearchParams();
+
+    if (params?.search) query.set("search", params.search);
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.limit) query.set("limit", String(params.limit));
+
+    const response = await fetch(
+      `${API_URL}/user/paginated?${query.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    );
 
     const result = await response.json();
 

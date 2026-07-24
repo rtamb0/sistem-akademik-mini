@@ -1,25 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { usePermissions } from "@/lib/permission/prodi";
-import { Prodi } from "@/lib/type";
+import { User } from "@/lib/type";
 
 type Props = {
-  prodiList: Prodi[];
+  userList: User[];
   search: string;
   loading: boolean;
   pagination: {
     page: number;
     totalPage: number;
   };
-  onEdit: (item: Prodi) => void;
+  onEdit: (item: User) => void;
   onDelete: (id: number) => Promise<void>;
   onSearch: (search: string) => void;
   onChangePage: (page: number) => void;
+  onResetPassword: (id: number) => Promise<void>;
 };
 
-export default function ProdiTable({
-  prodiList,
+export default function UserTable({
+  userList,
   search,
   loading,
   pagination,
@@ -27,12 +27,11 @@ export default function ProdiTable({
   onDelete,
   onSearch,
   onChangePage,
+  onResetPassword,
 }: Props) {
-  const { canEdit, canDelete } = usePermissions();
-
   const [inputSearch, setInputSearch] = useState(search);
 
-  const checkIfProdiListEmpty = prodiList.length === 0;
+  const checkIfUserListEmpty = userList.length === 0;
 
   return (
     <section className="card p-2" style={{ marginTop: 20 }}>
@@ -41,7 +40,7 @@ export default function ProdiTable({
           <input
             value={inputSearch}
             onChange={(e) => setInputSearch(e.target.value)}
-            placeholder="Cari kode atau nama prodi"
+            placeholder="Cari user"
             className="form-control"
           />
         </div>
@@ -57,50 +56,58 @@ export default function ProdiTable({
 
       {loading ? (
         <p>Memuat data...</p>
-      ) : checkIfProdiListEmpty ? (
-        <p>Belum ada data prodi.</p>
+      ) : checkIfUserListEmpty ? (
+        <p>Belum ada data user.</p>
       ) : (
         <table className="table table-striped mt-2 mb-2">
           <thead>
             <tr>
-              <th>No</th>
-              <th>Kode Prodi</th>
-              <th>Nama Prodi</th>
-              <th>Created At</th>
+              <th>ID</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Tanggal Dibuat</th>
               <th>Aksi</th>
             </tr>
           </thead>
 
           <tbody>
-            {prodiList.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.kode_prodi}</td>
-                <td>{item.nama_prodi}</td>
+            {userList.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
                 <td>
-                  {item.created_at
-                    ? new Date(item.created_at).toLocaleString("id-ID")
+                  {user.created_at
+                    ? new Date(user.created_at).toLocaleString("id-ID")
                     : "-"}
                 </td>
-                <td>
+                <td style={{ padding: 10 }}>
                   <div className="d-flex gap-2">
-                    {canEdit && (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => onEdit(item)}
-                      >
-                        Edit
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="btn btn-warning"
+                      onClick={() => onEdit(user)}
+                    >
+                      Edit
+                    </button>
 
-                    {canDelete && (
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => onDelete(item.id)}
-                      >
-                        Hapus
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => onDelete(user.id)}
+                    >
+                      Hapus
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-info"
+                      onClick={() => onResetPassword(user.id)}
+                    >
+                      Reset Password
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -108,7 +115,6 @@ export default function ProdiTable({
           </tbody>
         </table>
       )}
-
       <div
         style={{
           display: "flex",
