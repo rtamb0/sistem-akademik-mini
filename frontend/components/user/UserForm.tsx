@@ -73,6 +73,7 @@ export default function UserForm({
               })
             }
             placeholder="Nama user"
+            required
           />
         </div>
 
@@ -93,6 +94,7 @@ export default function UserForm({
             className="form-control"
             placeholder="Email user"
             autoComplete="one-time-code"
+            required
           />
         </div>
 
@@ -114,6 +116,7 @@ export default function UserForm({
               className="form-control"
               placeholder="Password"
               autoComplete="new-password"
+              required
             />
           </div>
         )}
@@ -132,6 +135,7 @@ export default function UserForm({
               })
             }
             className="form-select"
+            required
           >
             <option value="admin">Admin</option>
             <option value="operator">Operator</option>
