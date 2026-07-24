@@ -42,38 +42,48 @@ export default function MahasiswaTable({
   const checkIfMahasiswaListEmpty = mahasiswaList.length === 0;
 
   return (
-    <section className="card" style={{ marginTop: 20 }}>
-      <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-        <input
-          value={inputSearch}
-          onChange={(e) => setInputSearch(e.target.value)}
-          placeholder="Cari NIM atau nama"
-        />
-        <select
-          value={selectedProdi}
-          onChange={(e) => {
-            setSelectedProdi(e.target.value);
-          }}
-        >
-          <option value="">Semua Prodi</option>
-          {prodiList.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.nama_prodi}
-            </option>
-          ))}
-        </select>
-        <button onClick={() => onSearch(inputSearch, selectedProdi)}>
-          Cari
-        </button>
+    <section className="card p-2" style={{ marginTop: 20 }}>
+      <div className="row g-2">
+        <div className="col-auto">
+          <input
+            value={inputSearch}
+            onChange={(e) => setInputSearch(e.target.value)}
+            placeholder="Cari NIM atau nama"
+            className="form-control"
+          />
+        </div>
+        <div className="col-auto">
+          <select
+            value={selectedProdi}
+            onChange={(e) => {
+              setSelectedProdi(e.target.value);
+            }}
+            className="form-select"
+          >
+            <option value="">Semua Prodi</option>
+            {prodiList.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.nama_prodi}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="col-auto">
+          <button
+            className="btn btn-primary"
+            onClick={() => onSearch(inputSearch, selectedProdi)}
+          >
+            Cari
+          </button>
+        </div>
       </div>
 
-      <h2>Daftar Mahasiswa</h2>
       {loading ? (
         <p>Memuat data...</p>
       ) : checkIfMahasiswaListEmpty ? (
         <p>Belum ada data mahasiswa.</p>
       ) : (
-        <table>
+        <table className="table table-striped mt-2 mb-2">
           <thead>
             <tr>
               <th>No</th>
@@ -117,10 +127,10 @@ export default function MahasiswaTable({
                 <td>{item.nama_prodi}</td>
                 <td>{item.angkatan}</td>
                 <td>
-                  <div className="actions">
+                  <div className="d-flex gap-2">
                     {canEdit && (
                       <button
-                        className="btn-secondary"
+                        className="btn btn-warning"
                         onClick={() => onEdit(item)}
                       >
                         Edit
@@ -129,7 +139,7 @@ export default function MahasiswaTable({
 
                     {canDelete && (
                       <button
-                        className="btn-danger"
+                        className="btn btn-danger"
                         onClick={() => onDelete(item.id)}
                       >
                         Hapus
@@ -142,6 +152,7 @@ export default function MahasiswaTable({
           </tbody>
         </table>
       )}
+
       <div
         style={{
           display: "flex",
@@ -153,6 +164,7 @@ export default function MahasiswaTable({
         <button
           disabled={pagination.page <= 1}
           onClick={() => onChangePage(pagination.page - 1)}
+          className="btn btn-primary"
         >
           Previous
         </button>
@@ -160,6 +172,7 @@ export default function MahasiswaTable({
           Halaman {pagination.page} dari {pagination.totalPage}
         </span>
         <button
+          className="btn btn-primary"
           disabled={pagination.page >= pagination.totalPage}
           onClick={() => onChangePage(pagination.page + 1)}
         >
