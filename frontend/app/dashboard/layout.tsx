@@ -89,20 +89,22 @@ export default function DashboardLayout({
                 Prodi
               </Link>
             </li>
-            <li>
-              <Link
-                href="/dashboard/user"
-                className="p-2 rounded-3 d-block"
-                style={{
-                  backgroundColor:
-                    currentMenu === "/dashboard/user"
-                      ? "#e9ecef"
-                      : "transparent",
-                }}
-              >
-                Users
-              </Link>
-            </li>
+            {currentUser?.role === "admin" && (
+              <li>
+                <Link
+                  href="/dashboard/user"
+                  className="p-2 rounded-3 d-block"
+                  style={{
+                    backgroundColor:
+                      currentMenu === "/dashboard/user"
+                        ? "#e9ecef"
+                        : "transparent",
+                  }}
+                >
+                  Users
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
         <div className="flex-grow-1 p-4">{children}</div>
