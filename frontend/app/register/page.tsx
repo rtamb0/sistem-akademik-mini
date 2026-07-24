@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { saveAuth } from "@/lib/auth";
 import { registerAccount } from "@/lib/api";
 
 export default function RegisterPage() {
