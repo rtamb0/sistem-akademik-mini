@@ -41,7 +41,7 @@ export const getAllMahasiswa = async (req: Request, res: Response) => {
       FROM mahasiswa m
       JOIN prodi p ON m.prodi_id = p.id
       ${where}
-      ORDER BY m.id DESC
+      ORDER BY m.id ASC
       LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );

@@ -72,9 +72,9 @@ export default function UserTable({
           </thead>
 
           <tbody>
-            {userList.map((user) => (
+            {userList.map((user, index) => (
               <tr key={user.id}>
-                <td>{user.id}</td>
+                <td>{index + 1}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>

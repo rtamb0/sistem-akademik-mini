@@ -42,7 +42,7 @@ export const getPaginatedProdi = async (req: Request, res: Response) => {
       `SELECT id, nama_prodi, kode_prodi, created_at
       FROM prodi 
       ${where} 
-      ORDER BY nama_prodi ASC
+      ORDER BY id ASC
       LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
