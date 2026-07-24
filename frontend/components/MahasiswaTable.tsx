@@ -12,7 +12,6 @@ type Props = {
   search: string;
   prodiId: string;
   loading: boolean;
-  totalPage: number;
   pagination: {
     page: number;
     totalPage: number;
