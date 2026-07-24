@@ -54,31 +54,26 @@ export default function LoginPage() {
         >
           <input
             value={email}
+            className="form-control"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
           />
           <input
             type="password"
             value={password}
+            className="form-control"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
         </div>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary mt-2"
           style={{ width: "100%" }}
         >
           Login
         </button>
       </form>
-      <button
-        style={{ marginTop: 10 }}
-        className="btn btn-secondary"
-        onClick={() => (window.location.href = "/register")}
-      >
-        Don't have an account? Register here.
-      </button>
     </div>
   );
 }
