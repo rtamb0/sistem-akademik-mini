@@ -12,7 +12,7 @@ import {
 } from "@/lib/api/mahasiswa";
 import { getAllProdi } from "@/lib/api/prodi";
 import { usePermissions } from "@/lib/permission/mahasiswa";
-import { Mahasiswa } from "@/lib/type";
+import { Mahasiswa, MahasiswaInput } from "@/lib/type";
 
 export default function MahasiswaPage() {
   const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
@@ -32,14 +32,18 @@ export default function MahasiswaPage() {
 
   const { canCreate } = usePermissions();
 
-  const loadMahasiswa = async () => {
+  const loadMahasiswa = async (
+    searchValue: string = search,
+    prodiValue: string = prodiId,
+    pageValue: number = page,
+  ) => {
     try {
       setLoading(true);
       setError("");
       const result = await getMahasiswa({
-        search,
-        prodi_id: prodiId,
-        page,
+        search: searchValue,
+        prodi_id: prodiValue,
+        page: pageValue,
         limit,
       });
 
@@ -78,12 +82,12 @@ export default function MahasiswaPage() {
     setSearch(searchInput);
     setProdiId(prodiInput);
     setPage(1);
-    loadMahasiswa();
+    loadMahasiswa(searchInput, prodiInput, 1);
   };
 
   const handleChangePage = (newPage: number) => {
     setPage(newPage);
-    loadMahasiswa();
+    loadMahasiswa(search, prodiId, newPage);
   };
 
   const handleEdit = (item: Mahasiswa) => {

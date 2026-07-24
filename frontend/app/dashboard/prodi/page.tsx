@@ -26,13 +26,16 @@ export default function ProdiPage() {
 
   const { canCreate } = usePermissions();
 
-  const loadProdi = async () => {
+  const loadProdi = async (
+    searchValue: string = search,
+    pageValue: number = page,
+  ) => {
     try {
       setLoading(true);
       setError("");
       const result = await getProdi({
-        search,
-        page,
+        search: searchValue,
+        page: pageValue,
         limit,
       });
 
@@ -54,12 +57,12 @@ export default function ProdiPage() {
   const handleSearch = (searchInput: string) => {
     setSearch(searchInput);
     setPage(1);
-    loadProdi();
+    loadProdi(searchInput, 1);
   };
 
   const handleChangePage = (newPage: number) => {
     setPage(newPage);
-    loadProdi();
+    loadProdi(search, newPage);
   };
 
   const handleEdit = (item: Prodi) => {
