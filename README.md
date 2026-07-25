@@ -70,6 +70,7 @@ Buat file `frontend/.env.local` lalu isi:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
 ```
 
 ## Menjalankan Project
