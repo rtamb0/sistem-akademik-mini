@@ -2,3 +2,4 @@
 uploads/mahasiswa/*
 /node_modules
 !uploads/mahasiswa/.gitkeep
+/dist
