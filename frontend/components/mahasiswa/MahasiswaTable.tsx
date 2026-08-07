@@ -4,7 +4,7 @@ import { Mahasiswa, Prodi } from "@/lib/type";
 import { useState } from "react";
 import { usePermissions } from "@/lib/permission/mahasiswa";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
+const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
 type Props = {
   mahasiswaList: Mahasiswa[];
@@ -114,7 +114,7 @@ export default function MahasiswaTable({
                     <img
                       src={
                         item.foto
-                          ? `${BACKEND_URL}/uploads/mahasiswa/${item.foto}`
+                          ? `${UPLOAD_URL}/mahasiswa/${item.foto}`
                           : "/avatar-placeholder.png"
                       }
                       alt={item.nama}
