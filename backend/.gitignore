@@ -1,5 +1,4 @@
 .env
-uploads/mahasiswa/*
+/uploads
 /node_modules
-!uploads/mahasiswa/.gitkeep
 /dist
