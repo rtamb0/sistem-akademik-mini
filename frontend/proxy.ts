@@ -3,28 +3,23 @@ import { stripBasePath, withBasePath } from "./lib/base-path";
 
 const protectedRoutes = ["/user", "/dashboard"];
 
+function getUserRole(userCookie: string | undefined) {
+  if (!userCookie) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(userCookie).role ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export function proxy(request: NextRequest) {
   const pathname = stripBasePath(request.nextUrl.pathname);
   const token = request.cookies.get("token")?.value;
   const loginUrl = new URL(withBasePath("/login"), request.url);
-  const user = request.cookies.get("user")?.value;
-  const userRole = user ? JSON.parse(user).role : null;
-
-  if (pathname === "/") {
-    if (token) {
-      if (userRole !== "admin") {
-        return NextResponse.redirect(
-          new URL(withBasePath("/dashboard/mahasiswa"), request.url),
-        );
-      } else {
-        return NextResponse.redirect(
-          new URL(withBasePath("/dashboard/user"), request.url),
-        );
-      }
-    } else {
-      return NextResponse.redirect(loginUrl);
-    }
-  }
+  const userRole = getUserRole(request.cookies.get("user")?.value);
 
   const isProtectedRoute = protectedRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
