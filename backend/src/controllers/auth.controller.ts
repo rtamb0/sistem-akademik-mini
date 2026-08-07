@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../config/database";
+import { SignOptions } from "jsonwebtoken";
+
+const options: SignOptions = {
+  expiresIn: (process.env.JWT_EXPIRES_IN ?? "2h") as SignOptions["expiresIn"],
+};
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -70,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN || "2h" },
+      options,
     );
 
     res.json({
