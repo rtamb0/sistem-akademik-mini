@@ -1,6 +1,4 @@
-const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-
-export const basePath = rawBasePath.replace(/\/$/, "");
+export const basePath = "/sistem-akademik-mini";
 
 export function withBasePath(pathname: string) {
   if (!basePath) {
