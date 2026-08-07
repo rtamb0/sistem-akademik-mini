@@ -1,6 +1,7 @@
 services:
   backend:
     build: .
+    image: sistem-akademik:latest
     container_name: sistem-akademik-backend
     restart: unless-stopped
     env_file:
