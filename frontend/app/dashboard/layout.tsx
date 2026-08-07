@@ -2,7 +2,7 @@
 
 import { getUser, logout } from "@/lib/auth";
 import { stripBasePath } from "../../lib/base-path";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { logoutAccount } from "@/lib/api/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,20 +12,12 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [currentUser, setCurrentUser] = useState<{
+  const [currentUser] = useState<{
     name: string;
     email: string;
     role: string;
-  } | null>(null);
+  } | null>(() => getUser());
   const currentMenu = stripBasePath(usePathname() ?? "");
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setCurrentUser(getUser());
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, []);
 
   const handleLogout = async () => {
     const confirmed = window.confirm("Yakin ingin logout?");
