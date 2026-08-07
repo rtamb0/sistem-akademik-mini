@@ -125,7 +125,6 @@ export default function ProdiPage() {
       {formVisible && (
         <ProdiForm
           selectedProdi={selectedProdi}
-          prodi={prodi}
           onSubmit={handleSubmit}
           onCancelEdit={() => {
             setSelectedProdi(null);

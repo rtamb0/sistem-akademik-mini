@@ -12,7 +12,7 @@ import {
 } from "@/lib/api/mahasiswa";
 import { getAllProdi } from "@/lib/api/prodi";
 import { usePermissions } from "@/lib/permission/mahasiswa";
-import { Mahasiswa, MahasiswaInput } from "@/lib/type";
+import { Mahasiswa, MahasiswaInput, Prodi } from "@/lib/type";
 
 export default function MahasiswaPage() {
   const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
@@ -22,7 +22,7 @@ export default function MahasiswaPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [prodi, setProdi] = useState<{ id: number; nama: string }[]>([]);
+  const [prodi, setProdi] = useState<Prodi[]>([]);
   const [search, setSearch] = useState("");
   const [prodiId, setProdiId] = useState("");
   const [page, setPage] = useState(1);
