@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { stripBasePath, withBasePath } from "./lib/base-path";
 
 const protectedRoutes = ["/user", "/dashboard"];
 
 export function proxy(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const pathname = stripBasePath(request.nextUrl.pathname);
   const token = request.cookies.get("token")?.value;
-  const loginUrl = new URL("/login", request.url);
+  const loginUrl = new URL(withBasePath("/login"), request.url);
   const user = request.cookies.get("user")?.value;
   const userRole = user ? JSON.parse(user).role : null;
 
@@ -13,10 +14,12 @@ export function proxy(request: NextRequest) {
     if (token) {
       if (userRole !== "admin") {
         return NextResponse.redirect(
-          new URL("/dashboard/mahasiswa", request.url),
+          new URL(withBasePath("/dashboard/mahasiswa"), request.url),
         );
       } else {
-        return NextResponse.redirect(new URL("/dashboard/user", request.url));
+        return NextResponse.redirect(
+          new URL(withBasePath("/dashboard/user"), request.url),
+        );
       }
     } else {
       return NextResponse.redirect(loginUrl);
@@ -34,7 +37,9 @@ export function proxy(request: NextRequest) {
   }
 
   if (pathname === "/dashboard/user" && userRole !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard/mahasiswa", request.url));
+    return NextResponse.redirect(
+      new URL(withBasePath("/dashboard/mahasiswa"), request.url),
+    );
   }
 
   return NextResponse.next();

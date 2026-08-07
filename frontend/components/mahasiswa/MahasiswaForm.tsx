@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Mahasiswa, MahasiswaInput } from "@/lib/type";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
 type Props = {
   selectedMahasiswa: Mahasiswa | null;

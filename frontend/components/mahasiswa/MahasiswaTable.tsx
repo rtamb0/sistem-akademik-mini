@@ -4,7 +4,7 @@ import { Mahasiswa, Prodi } from "@/lib/type";
 import { useState } from "react";
 import { usePermissions } from "@/lib/permission/mahasiswa";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
 type Props = {
   mahasiswaList: Mahasiswa[];

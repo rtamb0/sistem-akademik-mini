@@ -4,6 +4,7 @@ import { useState } from "react";
 import { saveAuth } from "@/lib/auth";
 import { loginAccount } from "@/lib/api/auth";
 import { requestPasswordResetByUser } from "@/lib/api/user";
+import { withBasePath } from "../../lib/base-path";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -22,9 +23,9 @@ export default function LoginPage() {
       const role = result.user.role;
 
       if (role !== "admin") {
-        window.location.href = "/dashboard/mahasiswa";
+        window.location.href = withBasePath("/dashboard/mahasiswa");
       } else {
-        window.location.href = "/dashboard/user";
+        window.location.href = withBasePath("/dashboard/user");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login gagal");

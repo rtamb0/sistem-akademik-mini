@@ -1,9 +1,11 @@
 "use client";
 
 import { getUser, logout } from "@/lib/auth";
+import { stripBasePath } from "../../lib/base-path";
 import { useEffect, useState } from "react";
 import { logoutAccount } from "@/lib/api/auth";
-import Link from "next/dist/client/link";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -15,12 +17,14 @@ export default function DashboardLayout({
     email: string;
     role: string;
   } | null>(null);
-  const [currentMenu, setCurrentMenu] = useState<string>("");
+  const currentMenu = stripBasePath(usePathname() ?? "");
 
   useEffect(() => {
-    const storedUser = getUser();
-    setCurrentMenu(window.location.pathname);
-    setCurrentUser(storedUser);
+    const timeoutId = window.setTimeout(() => {
+      setCurrentUser(getUser());
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   const handleLogout = async () => {
@@ -36,7 +40,6 @@ export default function DashboardLayout({
       console.error(err);
     } finally {
       logout();
-      window.location.href = "/login";
     }
   };
 

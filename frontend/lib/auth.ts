@@ -1,3 +1,5 @@
+import { withBasePath } from "./base-path";
+
 const TOKEN_COOKIE_NAME = "token";
 const USER_COOKIE_NAME = "user";
 const TOKEN_MAX_AGE = 60 * 60 * 24;
@@ -64,5 +66,5 @@ export function logout() {
   document.cookie = `${TOKEN_COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax`;
   document.cookie = `${USER_COOKIE_NAME}=; Max-Age=0; Path=/; SameSite=Lax`;
 
-  window.location.replace("/login");
+  window.location.replace(withBasePath("/login"));
 }

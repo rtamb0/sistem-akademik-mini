@@ -1,23 +1,27 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import { resetPasswordByUser } from "@/lib/api/user";
+import { withBasePath } from "../../lib/base-path";
+import { useSearchParams } from "next/navigation";
 
 export default function ResetPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
+  return (
+    <Suspense fallback={null}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
+
+function ResetPasswordForm() {
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [token] = useState(searchParams.get("token") || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-
-    setToken(query.get("token") || "");
-    setEmail(query.get("email") || "");
-  }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,7 +60,7 @@ export default function ResetPasswordPage() {
       alert(result.message || "Password berhasil diubah");
       setPassword("");
       setConfirmPassword("");
-      window.location.href = "/login";
+      window.location.href = withBasePath("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengubah password");
     } finally {
