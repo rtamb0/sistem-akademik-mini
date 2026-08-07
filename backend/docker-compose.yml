@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "${BACKEND_PORT}:3000"
     depends_on:
       - mysql
 
@@ -21,6 +21,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
 
 volumes:
   mysql_data:
