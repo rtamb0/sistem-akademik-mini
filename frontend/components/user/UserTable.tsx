@@ -90,29 +90,35 @@ export default function UserTable({
                 </td>
                 <td style={{ padding: 10 }}>
                   <div className="d-flex gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-warning"
-                      onClick={() => onEdit(user)}
-                    >
-                      Edit
-                    </button>
+                    {user.role !== "admin" && (
+                      <button
+                        type="button"
+                        className="btn btn-warning"
+                        onClick={() => onEdit(user)}
+                      >
+                        Edit
+                      </button>
+                    )}
 
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      onClick={() => onDelete(user.id)}
-                    >
-                      Hapus
-                    </button>
+                    {user.role !== "admin" && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() => onDelete(user.id)}
+                      >
+                        Hapus
+                      </button>
+                    )}
 
-                    <button
-                      type="button"
-                      className="btn btn-info"
-                      onClick={() => onResetPassword(user.id)}
-                    >
-                      Reset Password
-                    </button>
+                    {user.role !== "admin" && (
+                      <button
+                        type="button"
+                        className="btn btn-info"
+                        onClick={() => onResetPassword(user.id)}
+                      >
+                        Reset Password
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
