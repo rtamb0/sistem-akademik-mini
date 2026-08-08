@@ -3,6 +3,7 @@
 import { Mahasiswa, Prodi } from "@/lib/type";
 import { useState } from "react";
 import { usePermissions } from "@/lib/permission/mahasiswa";
+import { withBasePath } from "@/lib/base-path";
 
 const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
@@ -115,7 +116,7 @@ export default function MahasiswaTable({
                       src={
                         item.foto
                           ? `${UPLOAD_URL}/mahasiswa/${item.foto}`
-                          : "/avatar-placeholder.png"
+                          : `${withBasePath("/Portrait_Placeholder.png")}`
                       }
                       alt={item.nama}
                       width={48}

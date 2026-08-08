@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Mahasiswa, MahasiswaInput } from "@/lib/type";
+import { withBasePath } from "@/lib/base-path";
 
 const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
@@ -134,7 +135,7 @@ export default function MahasiswaForm({
               src={
                 selectedMahasiswa && selectedMahasiswa.foto
                   ? `${UPLOAD_URL}/mahasiswa/${selectedMahasiswa.foto}`
-                  : "/Portrait_Placeholder.png"
+                  : `${withBasePath("/Portrait_Placeholder.png")}`
               }
               alt="Current Foto"
               width={48}
