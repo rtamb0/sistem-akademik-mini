@@ -24,6 +24,8 @@ services:
   backend:
     build: ./backend
     image: sistem-akademik-backend:latest
+    volumes:
+      - ./uploads:/uploads
     restart: unless-stopped
     env_file:
       - ./backend/.env
