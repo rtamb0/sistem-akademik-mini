@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Mahasiswa, MahasiswaInput } from "@/lib/type";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
+const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL;
 
 type Props = {
   selectedMahasiswa: Mahasiswa | null;
@@ -133,7 +133,7 @@ export default function MahasiswaForm({
             <img
               src={
                 selectedMahasiswa && selectedMahasiswa.foto
-                  ? `${BACKEND_URL}/uploads/mahasiswa/${selectedMahasiswa.foto}`
+                  ? `${UPLOAD_URL}/mahasiswa/${selectedMahasiswa.foto}`
                   : "/Portrait_Placeholder.png"
               }
               alt="Current Foto"
