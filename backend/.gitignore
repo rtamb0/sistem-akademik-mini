@@ -1,4 +1,4 @@
 .env
-/uploads
+/uploads/mahasiswa/*
 /node_modules
 /dist
