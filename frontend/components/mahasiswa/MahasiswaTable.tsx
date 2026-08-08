@@ -111,23 +111,21 @@ export default function MahasiswaTable({
                     item.foto ? { display: "flex", alignItems: "center" } : {}
                   }
                 >
-                  {item.foto && (
-                    <img
-                      src={
-                        item.foto
-                          ? `${UPLOAD_URL}/mahasiswa/${item.foto}`
-                          : `${withBasePath("/Portrait_Placeholder.png")}`
-                      }
-                      alt={item.nama}
-                      width={48}
-                      height={48}
-                      style={{
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        marginRight: "10px",
-                      }}
-                    />
-                  )}
+                  <img
+                    src={
+                      item.foto
+                        ? `${UPLOAD_URL}/mahasiswa/${item.foto}`
+                        : `${withBasePath("/Portrait_Placeholder.png")}`
+                    }
+                    alt={item.nama}
+                    width={48}
+                    height={48}
+                    style={{
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      marginRight: "10px",
+                    }}
+                  />
                   {item.nama}
                 </td>
                 <td>{item.nama_prodi}</td>
