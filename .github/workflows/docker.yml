@@ -29,6 +29,9 @@ jobs:
         with:
           context: ./frontend
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_UPLOAD_URL=${{ vars.NEXT_PUBLIC_UPLOAD_URL }}
           tags: ghcr.io/rtamb0/sistem-akademik-frontend:latest
 
       - name: Build and push backend
