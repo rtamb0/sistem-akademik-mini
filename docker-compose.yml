@@ -11,19 +11,13 @@ services:
       - backend
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-        NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL}
-    image: sistem-akademik-frontend:latest
+    image: ghcr.io/rtamb0/sistem-akademik-frontend:latest
     restart: unless-stopped
     expose:
       - "3000"
 
   backend:
-    build: ./backend
-    image: sistem-akademik-backend:latest
+    image: ghcr.io/rtamb0/sistem-akademik-backend:latest
     volumes:
       - ./backend/uploads:/app/uploads
     restart: unless-stopped
