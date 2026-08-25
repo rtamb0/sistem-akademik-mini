@@ -58,50 +58,56 @@ export default function LoginPage() {
         flexDirection: "column",
         alignItems: "center",
         height: "100vh",
-        justifyContent: "center",
       }}
     >
-      <form onSubmit={handleLogin}>
-        <h1 style={{ textAlign: "center" }}>Login</h1>
-        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-        <div
-          className="form-group"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            width: "300px",
-          }}
-        >
-          <input
-            value={email}
-            className="form-control"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            value={password}
-            className="form-control"
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
+      <div className="p-4 bg-dark text-white w-100">
+        <h1 className="text-center">Sistem Akademik Mini</h1>
+      </div>
+      <div className="d-flex justify-content-center align-items-center flex-grow-1">
+        <div className="card p-5">
+          <h2 className="text-center">Login</h2>
+          {error && <p className="text-danger text-center">{error}</p>}
+          <form onSubmit={handleLogin}>
+            <div
+              className="form-group"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                width: "300px",
+              }}
+            >
+              <input
+                value={email}
+                className="form-control"
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+              />
+              <input
+                type="password"
+                value={password}
+                className="form-control"
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary mt-2"
+              style={{ width: "100%" }}
+            >
+              Login
+            </button>
+          </form>
+          <p className="mt-2" style={{ textAlign: "center" }}>
+            Forgot your password?
+            <a onClick={handleResetPassword} className="btn btn-link">
+              Reset it here
+            </a>
+            .
+          </p>
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary mt-2"
-          style={{ width: "100%" }}
-        >
-          Login
-        </button>
-      </form>
-      <p className="mt-2" style={{ textAlign: "center" }}>
-        Forgot your password?
-        <a onClick={handleResetPassword} className="btn btn-link">
-          Reset it here
-        </a>
-        .
-      </p>
+      </div>
     </div>
   );
 }
